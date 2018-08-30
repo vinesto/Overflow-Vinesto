@@ -17,15 +17,23 @@
           </div>
         </v-card-title>
         <v-card-actions>
-          <v-btn flat color="orange">Share</v-btn>
-          <v-btn flat color="orange">Explore</v-btn>
+          
+
+            <router-link :to="`/MyThread/${threads._id}/post`">
+          <v-btn flat color="orange" to="">
+            Add post
+            </v-btn>
+            </router-link>
+          <v-btn flat color="orange">Like</v-btn>
+          <v-btn flat color="orange">Dislike</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
   </v-layout>
 
+  <router-view></router-view>
+
   <v-container>
-    
   <v-layout v-for="(post,index) in threads.posts" :key="index">
     <v-flex xs12 sm6 offset-sm3>
       <v-card>
@@ -42,8 +50,8 @@
           </div>
         </v-card-title>
         <v-card-actions>
-          <v-btn flat color="orange">Share</v-btn>
-          <v-btn flat color="orange">Explore</v-btn>
+          <v-btn flat color="orange">Like</v-btn>
+          <v-btn flat color="orange">Dislike</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -54,15 +62,21 @@
 
 <script>
 import {mapState, mapActions} from 'vuex'
+import AddPostForm from 'vuex'
 
 export default {
     methods:{
         ...mapActions([
-            'getOneThread'
+            'getOneThread',
+            'upVoteThread'
         ])
     },
+    props:[
+      'checkData'
+    ],
     computed:{
         ...mapState([
+            'mythreads',
             'threads'
         ])
     },
@@ -70,6 +84,16 @@ export default {
         let id = this.$route.params.id
         this.getOneThread(id)
     },
+    watch:{
+      oneThread:function(){
+        let id = this.$route.params.id
+        console.log('m');
+        this.getOneThread(id)
+      },
+      getThreads:function(){
+        return this.checkData
+      }
+    }
 }
 </script>
 

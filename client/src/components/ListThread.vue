@@ -8,7 +8,7 @@
           <v-container fill-height fluid>
             <v-layout fill-height>
               <v-flex xs12 align-end flexbox>
-                <span class="headline">{{thread}}</span>
+                <span class="headline">{{thread.subject}}</span>
               </v-flex>
             </v-layout>
           </v-container>

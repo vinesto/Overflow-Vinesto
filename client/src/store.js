@@ -44,6 +44,7 @@ export default new Vuex.Store({
         .then(function (user) {
           // console.log(user);
           alert('login success')
+          context.commit('CONFIRM_MYTHREAD', user.data.data)
           localStorage.setItem("token", user.data.token)
           this.$router.push('/')
         })
@@ -174,10 +175,24 @@ export default new Vuex.Store({
         headers: { token }
       })
       .then(function ({ data }) {
-        context.commit('CONFIRM_MYTHREAD',data,data)
+        context.commit('CONFIRM_MYTHREAD',data.data)
       })
       .catch(function(err){
         alert("add post failed", err.message)
+      })
+    },
+    upVoteThread(context,data){
+      let token = localStorage.getItem("token")
+      axios({
+        method:"POST",
+        url:`http://localhost:3000/votes/up/threads/${data._id}`,
+        headers:{token}
+      })
+      .then(function({data}){
+        context.commit('CONFIRM_MYTHREAD',data.data)
+      })
+      .catch(function(err){
+        alert("add upvotes failed", err.message)
       })
     }
   }

@@ -55,7 +55,14 @@ export default new Router({
     {
       path: '/MyThread/:id',
       name: 'getThread',
-      component: () => import('./components/ThreadDetail.vue')
+      component: () => import('./components/ThreadDetail.vue'),
+      children:[
+        {
+          path:'/MyThread/:id/post',
+          name:'addpost',
+          component:() => import('./components/AddPostForm.vue')
+        }
+      ]
     },
   ]
 })

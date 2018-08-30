@@ -60,6 +60,11 @@ export default {
     }
     // register:this.register(),
     // logout:this.logout()
+  },
+  created() {
+    if(this.token) {
+      this.isLogin = true
+    }
   }
 };
 </script>
