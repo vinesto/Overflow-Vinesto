@@ -6,9 +6,12 @@ const Post = require('../models/posts')
 const upVotesThread = function (req, res) {
     Thread.findOne({ _id: req.params.id })
         .then(function (threadUpVotes) {
+            console.log(threadUpVotes.userId === req.user.id);
+            console.log(req.user.id);
+            
             if (threadUpVotes.userId == req.user.id) {
                 res.status(400).json({
-                    message: "cant vote your thread "
+                    message: "can't vote your thread "
                 })
             } else {
                 UpVote.create({
@@ -16,13 +19,23 @@ const upVotesThread = function (req, res) {
                     userId: req.user.id
                 })
                 .then(function (newUpVote) {
-                    console.log('ini thread yg mau di votes', threadUpVotes);
-                    console.log('ini post array nya', threadUpvotes.upVotes);
-                    console.log('ini newupvote nya', newUpVote);
-                    threadUpVotes.posts.push(newUpVote)
-                    res.status(200).json({
-                        message: "upvote success",
-                        data:newUpVote
+                    console.log(newUpVote);
+                    Thread.updateOne({_id:req.params.id},{
+                        $push:{upVotes:newUpVote}
+                    })
+                    .then(function(threadWithNewUpVote){
+                        console.log(threadWithNewUpVote);
+                        
+                        res.status(200).json({
+                            message: "upvote success",
+                            data:threadWithNewUpVote
+                        })
+                    })
+                    .catch(function(err){
+                        console.log(err.message);
+                        res.status(404).json({
+                            message: "upvote failed"
+                        })
                     })
                 })
                 .catch(function (err) {
@@ -51,12 +64,21 @@ const downVotesThread = function (req, res) {
                 DownVote.create({
                     count: 1,
                     userId: req.user.id
-                })
-                    .then(function (newUpVote) {
-                        threadUpVotes.posts.push(newUpVote)
-                        res.status(200).json({
-                            message: "downvote success",
-                            data:newUpVote
+                    .then(function (newDownVote) {
+                        Thread.updateOne({_id:req.params.id},{
+                            $push:{downVotes:newDownVote}
+                        })
+                        .then(function(threadWithNewDownVote){
+                            res.status(200).json({
+                                message: "Downvote success",
+                                data:threadWithNewDownVote
+                            })
+                        })
+                        .catch(function(err){
+                            console.log(err.message);
+                            res.status(404).json({
+                                message: "Downvote failed"
+                            })
                         })
                     })
                     .catch(function (err) {
@@ -64,6 +86,7 @@ const downVotesThread = function (req, res) {
                             message: "downvote failed"
                         })
                     })
+                })
             }
         })
         .catch(function (err) {
